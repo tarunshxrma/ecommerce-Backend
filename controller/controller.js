@@ -1,5 +1,5 @@
 const projectModel = require('../model/projectmodel')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const saltround = 10;
 const register = async (req,res,next) => {
