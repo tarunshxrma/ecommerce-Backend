@@ -29,14 +29,14 @@ const register = async (req,res,next) => {
 const login = async (req,res) => {
     const { name ,email, password} = req.body
     
-    const user = await projectModel.findOne({email:email || {name: name}}); //{email:email} || {name: name}
+    const user = await projectModel.findOne({email:email}); //{email:email} || {name: name}
     
     if (user == null){
         return res.status(400).send("User Not Found")
     }
     try{
-        if(await bcrypt.compare(password, user.password)){
-            res.send("success")
+        if(bcrypt.compare(password, user.password)){
+           return res.send("success")
         }
         else(
             res.send("Not Allowed")
