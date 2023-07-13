@@ -1,5 +1,6 @@
 const projectModel = require('../model/projectmodel')
 const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken")
 
 const saltround = 10;
 const register = async (req,res,next) => {
@@ -10,7 +11,7 @@ const register = async (req,res,next) => {
         if (existingUser) {
             return res.status(200).json({ message: 'User already registered' });
           }
-        else{
+        
 
             const hashpassword =await bcrypt.hash(password, saltround) 
             // console.log(hashpassword) 
@@ -19,7 +20,7 @@ const register = async (req,res,next) => {
             return res.send(dbres);
         }
         
-    }
+    
         
     catch{
         res.status(500).send("Server Error")
@@ -35,12 +36,17 @@ const login = async (req,res) => {
         return res.status(400).send("User Not Found")
     }
     try{
-        if(bcrypt.compare(password, user.password)){
-           return res.send("success")
+        if(bcrypt.compareSync(password, user.password)){
+            const token = jwt.sign({ useremail: user.email }, secretkey, { expiresIn: 3600 })
+        return res.send({
+            msg: "user is registered with the token",
+            token: token
+        })
+          
         }
-        else(
-            res.send("Not Allowed")
-        )
+       
+            return res.send("Not Allowed")
+        
     }catch{
         res.status(500).send("Server Error")
     }
